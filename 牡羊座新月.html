@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>牡羊座新月（部分日食）のグラフィックレコーディング</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol&family=Yomogi&family=Zen+Kurenaido&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+        :root {
+            --theme-1: #9966CC; /* パープル - 宇宙/天体 */
+            --theme-2: #FF6B6B; /* ピンク/レッド - 情熱/牡羊座 */
+            --theme-3: #4ECDC4; /* ターコイズ - ヒーリング/海王星 */
+            --theme-4: #FFD166; /* イエロー - 太陽/光 */
+            --theme-5: #5D87E8; /* ブルー - 水星/コミュニケーション */
+        }
+
+        body {
+            font-family: 'Yomogi', cursive;
+            /* 手書き風グリッドライン背景 */
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h100v100H0z" fill="none"/><path d="M0 10h100M10 0v100" stroke="%23e0e0e0" stroke-width="0.5" stroke-dasharray="2,3"/></svg>');
+            background-size: 30px 30px;
+            background-color: #f9f7f1;
+            overflow-x: hidden;
+            color: #334155;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 2000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .title-area {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .main-title {
+            font-family: 'Kaisei Decol', serif;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, var(--theme-1), var(--theme-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            padding: 0 30px;
+            position: relative;
+        }
+
+        .main-title i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+        }
+
+        .main-title i:first-child {
+            left: 0;
+            color: var(--theme-2);
+        }
+
+        .main-title i:last-child {
+            right: 0;
+            color: var(--theme-1);
+        }
+
+        .sub-title {
+            font-family: 'Zen Kurenaido', sans-serif;
+            font-size: 16px;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 30px;
+        }
+
+        .card {
+            background-color: transparent;
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            font-family: 'Kaisei Decol', serif;
+            font-size: 18px;
+            color: #1e40af;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--theme-2);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .icon-large {
+            font-size: 70px;
+            display: block;
+            margin: 15px auto;
+            text-align: center;
+        }
+
+        .speech-bubble {
+            position: relative;
+            background-color: rgba(157, 78, 221, 0.1);
+            border-radius: 15px;
+            padding: 12px;
+            margin: 15px 0;
+            font-family: 'Yomogi', cursive;
+        }
+
+        .speech-bubble::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(157, 78, 221, 0.1) transparent;
+        }
+
+        .comparison-item {
+            background-color: transparent;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .highlight-box {
+            border-left: 3px solid var(--theme-4);
+            padding-left: 10px;
+            background-color: transparent;
+            margin: 15px 0;
+        }
+
+        .custom-svg {
+            width: 70px;
+            height: auto;
+            display: block;
+            margin: 15px auto;
+        }
+
+        .keyword {
+            font-weight: bold;
+            color: var(--theme-2);
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .keyword i, .keyword span {
+            font-size: 0.8em;
+            margin-left: 3px;
+            color: var(--theme-5);
+        }
+
+        .eclipse-icon {
+            position: relative;
+            display: inline-block;
+        }
+
+        .eclipse-icon .fa-sun {
+            color: var(--theme-4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .eclipse-icon .fa-moon {
+            color: var(--theme-1);
+            position: absolute;
+            left: 5px;
+            top: 0;
+            z-index: 2;
+            font-size: 0.8em;
+        }
+
+        .astro-symbol {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: rgba(255, 107, 107, 0.2);
+            border-radius: 50%;
+            margin: 0 3px;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        /* メディアクエリ */
+        @media (max-width: 1600px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-area">
+            <h1 class="main-title">
+                <i class="fas fa-sun"></i>
+                2025年3月29日 牡羊座の新月（部分日食）
+                <i class="fas fa-moon"></i>
+            </h1>
+            <div class="sub-title">
+                <i class="fas fa-map-marker-alt"></i> ニューヨーク・マンハッタンからお届け | シンガー・ダンサー・アストロジスト Hitostar
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <!-- カード1: 日食・月食期の説明 -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-eclipse"></i> 日食・月食期の特徴
+                </h2>
+                
+                <div class="eclipse-icon icon-large">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                </div>
+                
+                <p>
+                    今回の新月は<span class="keyword">牡羊座<i class="fas fa-fire"></i></span>で起こる<span class="keyword">部分日食<i class="fas fa-adjust"></i></span>です。
+                    日食や月食は通常の新月・満月の<span class="keyword">大きいバージョン</span>で、エネルギーが<span class="keyword">何十倍も強い<i class="fas fa-bolt"></i></span>状態になります。
+                </p>
+                
+                <div class="speech-bubble">
+                    月の引力が普段より強いので、私たちに起こる出来事も通常より大きなスケールで起こりやすいです。大きなことが終わったり、新しい大きなことが始まったりするタイミングになります。
+                </div>
+
+                <p>
+                    2025年の中でも<span class="keyword">一番エネルギーが強い月<i class="fas fa-star"></i></span>といっても過言ではありません。
+                </p>
+            </div>
+
+            <!-- カード2: 3月の天体イベント -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-calendar-alt"></i> 3月の重要な天体イベント
+                </h2>
+                
+                <i class="fas fa-calendar-check icon-large" style="color: var(--theme-5);"></i>
+                
+                <div class="comparison-item" style="border-left: 3px solid var(--theme-1);">
+                    <p><i class="fas fa-moon"></i> <strong>3月14日</strong>: 皆既月食（乙女座の満月）</p>
+                </div>
+                
+                <div class="comparison-item" style="border-left: 3px solid var(--theme-4);">
+                    <p><i class="fas fa-sun"></i> <strong>3月19日</strong>: 宇宙元旦（春分）</p>
+                </div>
+                
+                <div class="comparison-item" style="border-left: 3px solid var(--theme-2);">
+                    <p><i class="fas fa-sun"></i><i class="fas fa-moon" style="font-size: 0.7em;"></i> <strong>3月29日</strong>: 部分日食（牡羊座の新月）</p>
+                </div>
+                
+                <div class="highlight-box">
+                    特に3月後半は、<span class="keyword">古いことが終わり、新しいことが一気に始まる<i class="fas fa-seedling"></i></span>ようなエネルギーを持っています。
+                </div>
+            </div>
+
+            <!-- カード3: 牡羊座のエネルギー -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-fire"></i> 牡羊座の特別なエネルギー
+                </h2>
+                
+                <i class="fas fa-rocket icon-large" style="color: var(--theme-2);"></i>
+                
+                <p>
+                    3月19日の春分は、太陽が<span class="keyword">牡羊座<span class="astro-symbol">♈</span></span>に入った瞬間。
+                    これは<span class="keyword">新しく何かを始める<i class="fas fa-play-circle"></i></span>エネルギーです。
+                </p>
+                
+                <div class="speech-bubble">
+                    牡羊座のエネルギーは、自分の「やりたい」と思う方向にスピードをもって突き進んでいく力があります。
+                </div>
+                
+                <p>
+                    今回の春分と新月は<span class="keyword">同じ牡羊座がテーマ</span>なので、<span class="keyword">ダブルで牡羊座<i class="fas fa-fire"></i><i class="fas fa-fire"></i></span>のメッセージが来ている状態です。
+                </p>
+                
+                <div class="highlight-box">
+                    「これからビジネスをやっていきたい」「情熱を持って何かやりたい」という方にとっては、<span class="keyword">自分自身のブランディング<i class="fas fa-user-check"></i></span>をしっかりするのに良い時期です。
+                </div>
+            </div>
+
+            <!-- カード4: 水星と金星の逆行 -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-sync-alt"></i> 水星と金星の逆行
+                </h2>
+                
+                <i class="fas fa-undo-alt icon-large" style="color: var(--theme-5);"></i>
+                
+                <p>
+                    今回の日食では、<span class="keyword">水星が逆行中<i class="fas fa-comment"></i>↩️</span>にあり、春分と同じ位置（春分点：牡羊座0度）に来ています。
+                </p>
+                
+                <div class="speech-bubble">
+                    逆行は「<span class="keyword">学び直し<i class="fas fa-graduation-cap"></i></span>」「<span class="keyword">再会<i class="fas fa-handshake"></i></span>」「<span class="keyword">やり直し<i class="fas fa-redo"></i></span>」といった要素をもたらします。
+                </div>
+                
+                <div class="comparison-item">
+                    <p><i class="fas fa-mercury"></i> <strong>水星逆行</strong>: 3月15日～4月7日</p>
+                    <p>コミュニケーションや学び・教えを見直す時期</p>
+                </div>
+                
+                <div class="comparison-item">
+                    <p><i class="fas fa-venus"></i> <strong>金星逆行</strong>: 3月2日～4月13日</p>
+                    <p>人間関係、お金、恋愛、美についてのリセット時期</p>
+                </div>
+            </div>
+
+            <!-- カード5: 海王星と金星の影響 -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-water"></i> 海王星と金星の影響
+                </h2>
+                
+                <i class="fas fa-palette icon-large" style="color: var(--theme-3);"></i>
+                
+                <p>
+                    今回の日食では、<span class="keyword">ドラゴンヘッド<i class="fas fa-dragon"></i></span>と<span class="keyword">海王星<i class="fas fa-tint"></i></span>、それから<span class="keyword">金星<i class="fas fa-venus"></i></span>が重なっています。
+                </p>
+                
+                <div class="speech-bubble">
+                    金星と海王星の組み合わせは、とても<span class="keyword">美しい芸術的なエネルギー<i class="fas fa-music"></i></span>をもたらします。音楽やヒーリング、自然を感じたり、クリエイティブなことを楽しむのに最適な時期です。
+                </div>
+                
+                <div class="highlight-box">
+                    金星と海王星に共通する大事な意味は「<span class="keyword">自己価値<i class="fas fa-heart"></i></span>」です。金星は「価値」を司り、海王星は「癒し」「許し」のエネルギーを持ちます。特に<span class="keyword">自己愛<i class="fas fa-spa"></i></span>に関わります。
+                </div>
+            </div>
+
+            <!-- カード6: ヒスターの体験談1 -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-user-circle"></i> ヒスターの人生転機
+                </h2>
+                
+                <i class="fas fa-plane-departure icon-large" style="color: var(--theme-1);"></i>
+                
+                <p>
+                    もともとニューヨークで10年以上<span class="keyword">シンガー・ダンサー<i class="fas fa-music"></i><i class="fas fa-dancing-women"></i></span>として活動してきました。
+                </p>
+                
+                <div class="speech-bubble">
+                    日本に戻って大変な時期を過ごしていたとき、アストロロジーの先生に出会い、初めてセッションを受けました。出生情報しか伝えていないのに、「Hitoさんは歌って踊って演技するのが合っていますね」と言われて驚きました。
+                </div>
+                
+                <div class="highlight-box">
+                    その瞬間に「あ、やっぱりもう一度ニューヨークに戻ろう」と決めて、再び渡米。そして戻った後に、自分のビジネスとして<span class="keyword">アストロロジーのリーディング<i class="fas fa-star-of-life"></i></span>を始めたのです。
+                </div>
+            </div>
+
+            <!-- カード7: ヒスターの体験談2 -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i> アストロロジーでの変化
+                </h2>
+                
+                <i class="fas fa-magic icon-large" style="color: var(--theme-4);"></i>
+                
+                <p>
+                    アストロロジーのリーディングを始めると、今までの時給の<span class="keyword">10倍以上の収入<i class="fas fa-money-bill-wave"></i></span>が入ってくるようになりました。
+                </p>
+                
+                <div class="speech-bubble">
+                    最初の1年間で<span class="keyword">200人以上<i class="fas fa-users"></i></span>をリーディングするまでになりました。しかも大勢のイベントに呼ばれたりして、あっという間に仕事が回りはじめたんです。
+                </div>
+                
+                <p>
+                    人生で一番どん底にいたときに、アストロロジーで自分を変えたのが大きな転機でした。
+                </p>
+            </div>
+
+            <!-- カード8: 自己価値観の変化 -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-heart"></i> 自己価値観の変化
+                </h2>
+                
+                <i class="fas fa-crown icon-large" style="color: var(--theme-2);"></i>
+                
+                <p>
+                    アストロロジーで変えたものの一つは「<span class="keyword">自己価値観<i class="fas fa-gem"></i></span>」です。
+                </p>
+                
+                <div class="speech-bubble">
+                    リーディングを受けたとき、「Hitoさんはきれいに着飾ることが開運につながるタイプだ」と言われました。Aラインのワンピースや花柄の服を着たり、ネイルサロンに行ったりし始めると、自分に合っていると感じられました。
+                </div>
+                
+                <div class="highlight-box">
+                    自然とSNSで自分の姿を出せるようになり、その結果<span class="keyword">カーネギーホール<i class="fas fa-landmark"></i></span>からオフィシャルインフルエンサーのオファーを受けるなど、思いもよらない展開になりました。
+                </div>
+            </div>
+
+            <!-- カード9: 恋愛の変化 -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-heartbeat"></i> 恋愛の変化
+                </h2>
+                
+                <i class="fas fa-venus-mars icon-large" style="color: var(--theme-3);"></i>
+                
+                <p>
+                    もう一つアストロロジーで大きく変えたのは「<span class="keyword">恋愛<i class="fas fa-kiss-wink-heart"></i></span>」です。
+                </p>
+                
+                <div class="speech-bubble">
+                    自分に合う恋愛のパターンや今の星の流れでどう変われるかなども、チャートを使って分析できるようになりました。
+                </div>
+                
+                <p>
+                    自分自身の内面をアストロロジーで見つめるうちに「<span class="keyword">自己愛<i class="fas fa-spa"></i></span>」が変わって、どんな人と一緒にいたら心地いいのかがわかるようになりました。
+                </p>
+                
+                <div class="highlight-box">
+                    現在のパートナーはブロードウェイの舞台などで長く活躍し、映画・テレビ・モデルとして成功した人。アストロロジーで自分を変えたからこそ、このような出会いも訪れました。
+                </div>
+            </div>
+
+            <!-- カード10: メッセージ -->
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-comment-dots"></i> 最後のメッセージ
+                </h2>
+                
+                <i class="fas fa-hand-sparkles icon-large" style="color: var(--theme-4);"></i>
+                
+                <p>
+                    このような変化は<span class="keyword">誰にでも起こりうる<i class="fas fa-infinity"></i></span>と心から思っています。みんなそれぞれ平等で、すべては繋がっているからこそ、本当に叶えたいと思ったことは必ず実現できます。
+                </p>
+                
+                <div class="speech-bubble">
+                    大事なのは、自分を抑えず「<span class="keyword">本当になりたい自分<i class="fas fa-star"></i></span>」を思い出すこと。それを思い出すために、アストロロジーや自己愛の学びが大いに役立ちます。
+                </div>
+                
+                <div class="highlight-box">
+                    自分の本質や内面を大切にして、これからの時期を過ごしていきましょう。きっと宇宙は、思ってもみなかった素敵なところへ導いてくれるでしょう。
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            作成日: 2025年3月19日 | 情報源: Hitostarによる牡羊座新月（部分日食）解説
+        </footer>
+    </div>
+</body>
+</html>
